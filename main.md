@@ -21,7 +21,7 @@ https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=search_seq_name
 
 ## Join Paired Ends (if the reads are not already paired)**
 
-*Note: using “Author_Year” and “Author” generically to explain our nomenclature used for each study. Anywhere these terms appear, the code is run once for each study.*
+Note: using *Author_Year* and *Author* generically to explain our nomenclature used for each study. Anywhere these terms appear, the code is run once for each study.
 
 **Rename Files so they can be de-interleaved (i.e separate the forward and reverse reads into 2 distinct files). In the Terminal:**<br>
 
@@ -47,21 +47,28 @@ join_paired_ends.py -f Author_ForRev/forward_reads.fastq -r Author_ForRev/revers
 
 **Trimming the 515F Forward primers to just retain a specific region of the V4 hyervariable region of the 16S rRNA gene, in terminal:**<br>
 
-(install cutadapt with: pip install --user --upgrade cutadapt)
+(install cutadapt with: ```pip install --user --upgrade cutadapt```)
+
+```bash
 ~/.local/bin/cutadapt -g GTGYCAGCMGCCGCGGTAA Author_PE.fastq > Author_trimmed.fastq
+```
 
 ---
 
 ## Split Fastq by sample for import to Qiime2. Done in Qiime1, here:
 
+```bash
 split_sequence_file_on_sample_ids.py -i Author_PE/fastqjoin.join.fastq -o Author_q2_importable --file_type fastq
+```
 
 ---
 
 ## Trim 250 bp out from 515F primer in R package “DADA2”
 
+```R
 Author_trimmed <- file.path(filt_path, paste0(sample.names, "Author_trimmed.fastq.gz")) 
 Author_RevTrim <- filterAndTrim(fwd=fnFs,filt=Author_trimmed,truncLen=250,truncQ=0,trimLef=0,maxLen=Inf,minLen=0,maxN=0,minQ=0,maxEE=Inf) 
+```
 
 --
 
@@ -174,23 +181,30 @@ qiime feature-table merge-seqs \
 
 ---
 
-## All archaeal, fungal, chloroplast, and mitochondrial ESVs identified with assign_taxonomy against the SILVA128 99% taxonomy (Qiime2 did not have classify-consensus with Silva at the time we processed the data). These ESVs were removed from the merged biom file, and the tree file (below), aside from several archaea as outgroups for rooting the tree.
+All archaeal, fungal, chloroplast, and mitochondrial ESVs identified with assign_taxonomy against the SILVA128 99% taxonomy (Qiime2 did not have classify-consensus with Silva at the time we processed the data). These ESVs were removed from the merged biom file, and the tree file (below), aside from several archaea as outgroups for rooting the tree.
 
+```bash
 assign_taxonomy.py -i MBSP.fasta -t consensus_taxonomy_7_levels.txt -r 99_otus_16S.fasta
+```
 
-#Filtering merged biom file:
+### Filtering merged biom file:
+```bash
 filter_otus_from_otu_table.py -i Dada2_merged_table/feature-table.biom -o MBSP_NoUnassigned.biom -e Dada2_seqs/UnassignedTipNames.txt
 filter_otus_from_otu_table.py -i MBSP_NoUnassigned.biom -o MBSP_NoChloroplast.biom -e Dada2_seqs/ChloroplastTipNames.txt
 filter_otus_from_otu_table.py -i MBSP_NoChloroplast.biom -o MBSP_BactOnly.biom -e Dada2_seqs/ArchaealTipNames.txt
+```
 
 #########
 ### Qiime1 generate alignment using SILVA128 reference.
 
+```bash
 align_seqs.py -i dna-sequences.fasta -m pynast -t 99_otus_aligned.fasta -o MBSP_Qiime1_alignment
+```
 
-#filter alignment
+## filter alignment
+```bash
 filter_alignment.py -i MBSP_Qiime1_alignment/dna-sequences_aligned.fasta -o Filtered -e 0.10 -g 0.80
-
+```
 #########
 ### PASTA for improved alignment and building tree
 
