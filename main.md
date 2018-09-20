@@ -19,7 +19,7 @@ https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=search_seq_name
 
 ---
 
-##Join Paired Ends (if the reads are not already paired)**
+## Join Paired Ends (if the reads are not already paired)**
 
 *Note: using “Author_Year” and “Author” generically to explain our nomenclature used for each study. Anywhere these terms appear, the code is run once for each study.*
 
