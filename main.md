@@ -68,29 +68,42 @@ Author_RevTrim <- filterAndTrim(fwd=fnFs,filt=Author_trimmed,truncLen=250,truncQ
 ## DADA2 to identify ESVs. We ran this analysis on each independent study separately and merged the ESV tables and representative sequences afterwards (see merging steps below in Qiime 2)
 
 ### Infer Dada2 error model 
+```R
 errFs = learnErrors(Author_RevTrim, multithread=TRUE) 
+```
 
 ### Plot error model 
+```R
 p = plotErrors(errFs, nominalQ=TRUE) 
 ggsave("dada_errors_F.png", plot=p) 
+```
 
 ### Dereplicate reads 
+```R
 derepFs = derepFastq(Author_RevTrim, verbose=TRUE) 
+```
 
 ### Infer samples
+```R
 dadaFs = dada(derepFs, err=errFs, multithread=TRUE) 
+```
 
 ### Make tables 
+```R
 seqtab = makeSequenceTable(dadaFs) 
 saveRDS(seqtab,"seqtab.rds”) 
+```
 
 ### Remove chimera:
+```R
 seqtab.nochim = removeBimeraDenovo(seqtab, method='consensus', verbose=TRUE) 
 dim(seqtab.nochim) 
 sum(seqtab.nochim)/sum(seqtab) 
 saveRDS(seqtab.nochim,"seqtab.nochim.rds”) 
+```
 
 ### Convert to biom file in R
+```R
 library(devtools) 
 library(phyloseq) 
 library(biomformat) 
@@ -104,20 +117,24 @@ phyloseq-class experiment-level object
 
 stn.biom = make_biom(t(seqtab)) 
 write_biom(stn.biom, './seqtab.nochim.biom’) 
- 
+```
+
 ---
 
 ## In Qiime2 merging biom files and representative ESVs from each individually processed dataset:
 
 ### Import biom for each study:
+```bash
 qiime tools import \
   --input-path Author_dada2.biom \
   --type 'FeatureTable[Frequency]' \
   --source-format BIOMV210Format \
   --output-path Author_dada2.qza
+```
 …same for each study…
 
 ### Merge biom files into one:
+```bash
 qiime feature-table merge \
   --i-tables Ernakovich_dada2.qza \
   --i-tables Jurburg_dada2.qza \
@@ -129,15 +146,19 @@ qiime feature-table merge \
   --i-tables Zhai_dada2.qza \
   --i-tables Simonin_dada2.qza \
   --o-merged-table MBSP_Dada2_merged.qza
+```
 
 ### Import biom for each study:
+```bash
 qiime tools import \
   --input-path Author.fna \
   --output-path Author_seqs.qza \
   --type 'FeatureData[Sequence]'
+```
 …same for each study…
 
 ### Merge ESVs into one representative ESV fasta file.
+```bash
 qiime feature-table merge-seqs \
   --i-data Ernakovich_seqs.qza \
   --i-data Jurburg_seqs.qza \
@@ -149,6 +170,7 @@ qiime feature-table merge-seqs \
   --i-data Zhai_seqs.qza \
   --i-data Simonin_seqs.qza \
   --o-merged-data MBSP_repseqs.qza
+```
 
 ---
 
