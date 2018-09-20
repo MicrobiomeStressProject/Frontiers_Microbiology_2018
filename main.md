@@ -19,18 +19,18 @@ https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=search_seq_name
 
 ---
 
-** Join Paired Ends (if the reads are not already paired) **
+**Join Paired Ends (if the reads are not already paired)**
 
 Note: using “Author_Year” and “Author” generically to explain our nomenclature used for each study. Anywhere these terms appear, the code is run once for each study.
 
-** Rename Files so they can be de-interleaved (i.e separate the forward and reverse reads into 2 distinct files). In the Terminal: **
+**Rename Files so they can be de-interleaved (i.e separate the forward and reverse reads into 2 distinct files). In the Terminal:**
 sed '/^@/ s/\./_/' Author_Year_sra_data.fastq > Author2.fastq
 sed '/^+/ s/\./_/' Author2.fastq > Author_raw_renamed.fastq 
 
-** Extract Forward and Reverse reads, common in SRA datasets that they are deposited together in the same file (not necessary for unpublished). In Qiime 1: **
+**Extract Forward and Reverse reads, common in SRA datasets that they are deposited together in the same file (not necessary for unpublished). In Qiime 1:**
 extract_reads_from_interleaved_file.py -i Author_raw_renamed.fastq -o Author_ForRev --forward_read_identifier .1 --reverse_read_identifier .2
 
-** Join Paired Ends from what was just de-interleaved, here in Qiime1 (possible to join PE in Qiime 2 using “qiime vsearch join-pairs” function): **
+**Join Paired Ends from what was just de-interleaved, here in Qiime1 (possible to join PE in Qiime 2 using “qiime vsearch join-pairs” function):**
 join_paired_ends.py -f Author_ForRev/forward_reads.fastq -r Author_ForRev/reverse_reads.fastq -o Author_PE
 
 ---
