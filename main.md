@@ -19,9 +19,9 @@ https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=search_seq_name
 
 ---
 
-**Join Paired Ends (if the reads are not already paired)**
+##Join Paired Ends (if the reads are not already paired)**
 
-Note: using “Author_Year” and “Author” generically to explain our nomenclature used for each study. Anywhere these terms appear, the code is run once for each study.
+*Note: using “Author_Year” and “Author” generically to explain our nomenclature used for each study. Anywhere these terms appear, the code is run once for each study.*
 
 **Rename Files so they can be de-interleaved (i.e separate the forward and reverse reads into 2 distinct files). In the Terminal:**<br>
 
