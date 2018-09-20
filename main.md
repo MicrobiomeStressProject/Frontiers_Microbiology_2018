@@ -25,10 +25,10 @@ Note: using “Author_Year” and “Author” generically to explain our nomenc
 
 **Rename Files so they can be de-interleaved (i.e separate the forward and reverse reads into 2 distinct files). In the Terminal:**<br>
 
-'''sh
+'''bash
 sed '/^@/ s/\./_/' Author_Year_sra_data.fastq > Author2.fastq
 '''
-'''sh
+'''bash
 sed '/^+/ s/\./_/' Author2.fastq > Author_raw_renamed.fastq 
 '''
 
