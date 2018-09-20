@@ -24,8 +24,13 @@ https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=search_seq_name
 Note: using “Author_Year” and “Author” generically to explain our nomenclature used for each study. Anywhere these terms appear, the code is run once for each study.
 
 **Rename Files so they can be de-interleaved (i.e separate the forward and reverse reads into 2 distinct files). In the Terminal:**<br>
+
+'''sh
 sed '/^@/ s/\./_/' Author_Year_sra_data.fastq > Author2.fastq
+'''
+'''sh
 sed '/^+/ s/\./_/' Author2.fastq > Author_raw_renamed.fastq 
+'''
 
 **Extract Forward and Reverse reads, common in SRA datasets that they are deposited together in the same file (not necessary for unpublished). In Qiime 1:**<br>
 extract_reads_from_interleaved_file.py -i Author_raw_renamed.fastq -o Author_ForRev --forward_read_identifier .1 --reverse_read_identifier .2
