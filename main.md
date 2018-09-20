@@ -25,19 +25,24 @@ Note: using “Author_Year” and “Author” generically to explain our nomenc
 
 **Rename Files so they can be de-interleaved (i.e separate the forward and reverse reads into 2 distinct files). In the Terminal:**<br>
 
-'''bash
+```bash
 sed '/^@/ s/\./_/' Author_Year_sra_data.fastq > Author2.fastq
-'''
-'''bash
+```
+```bash
 sed '/^+/ s/\./_/' Author2.fastq > Author_raw_renamed.fastq 
-'''
+```
 
 **Extract Forward and Reverse reads, common in SRA datasets that they are deposited together in the same file (not necessary for unpublished). In Qiime 1:**<br>
+
+```bash
 extract_reads_from_interleaved_file.py -i Author_raw_renamed.fastq -o Author_ForRev --forward_read_identifier .1 --reverse_read_identifier .2
+```
 
 **Join Paired Ends from what was just de-interleaved, here in Qiime1 (possible to join PE in Qiime 2 using “qiime vsearch join-pairs” function):**<br>
-join_paired_ends.py -f Author_ForRev/forward_reads.fastq -r Author_ForRev/reverse_reads.fastq -o Author_PE
 
+```bash
+join_paired_ends.py -f Author_ForRev/forward_reads.fastq -r Author_ForRev/reverse_reads.fastq -o Author_PE
+```
 ---
 
 **Trimming the 515F Forward primers to just retain a specific region of the V4 hyervariable region of the 16S rRNA gene, in terminal:**<br>
